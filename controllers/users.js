@@ -1,39 +1,21 @@
 const express = require('express');
 const userService = require('../services/userService');
-//const exports = module.exports
-
-// const { Pool } = require('pg');
-// const parse = require('pg-connection-string').parse;
-// const connect = parse('postgres://IvanZharnov:0987654321@localhost:5432/usersDB');
-// const pool = new Pool(connect);
-
+const wrap = require('../middlewares/wrap')
 
 exports.getUsers = async (req, res) => {
-  console.log(userService);
-  await userService.getUsersService()
-  return res.send(res.rows);
+  const results = await userService.getUsersService();
+  console.log('controller', results);
+  return res.send(results);
 };
 
-// exports.createUser = (req, res, next) => {
+// exports.createUser = (req, res) => {
 //   const data = {
 //     first_name: req.body.first_name,
 //     last_name: req.body.last_name
 //   };
-//   console.log('Create new user.');
-//   pool.connect((err, client, done) => {
-//     if(err) {
-//       console.log('error fetching client from pull', err);
-//     }
-//     client.query('INSERT INTO users(first_name, last_name) values($1, $2)',
-//       [data.first_name, data.last_name]);
-//
-//     client.query('SELECT * FROM users WHERE first_name=($1) AND last_name=($2)', [data.first_name, data.last_name], (err, result) => {
-//       if(err) {
-//         console.log('error running query', err);
-//       }
-//       return res.send(result.rows);
-//     });
-//   });
+//   const result = userService.createUserService();
+//   console.log('controller', results);
+//   return res.send(results);
 // };
 //
 // exports.updateUser = (req, res, next) => {
@@ -47,17 +29,11 @@ exports.getUsers = async (req, res) => {
 //     if(err) {
 //       console.log('error fetching client from pull', err);
 //     }
-//     client.query('UPDATE users SET first_name=($1), last_name=($2) WHERE id=($3)', [data.first_name, data.last_name, id], (err, result) => {
+//     client.query('UPDATE users SET first_name=($1), last_name=($2) WHERE id=($3) RETURNING *', [data.first_name, data.last_name, id], (err, result) => {
 //       if(err) {
 //         console.log('error running query', err);
 //       }
 //       return res.set(result.rows);
-//     });
-//     client.query('SELECT id, first_name, last_name FROM users WHERE id=($1)', [id], (err, result) => {
-//       if(err) {
-//         console.log('error running query', err);
-//       }
-//       return res.send(result.rows);
 //     });
 //   });
 // };
