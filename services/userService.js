@@ -7,23 +7,47 @@ const pool = new Pool(connect);
 exports.getUsersService = () => {
   return new Promise((resolve, reject) => {
     pool.connect( async (err, client) => {
-      const result = await client.query('SELECT * FROM users ORDER BY id ASC');
+      const users = await client.query('SELECT * FROM users ORDER BY id ASC');
       if (err) {
-        return console.error('Error acquiring client', err.stack)
+        reject(err);
       };
-      console.log('service', result.rows);
-      return result.rows;
+      resolve(users);
     });
   });
 };
 
-// exports.createUserService = (data) => {
-//   pool.connect(async(err, client, done) => {
-//     const newUser = await client.query('INSERT INTO users(first_name, last_name) values($1, $2) RETURNING *', [data.first_name, data.last_name]);
-//     if(err) {
-//       console.log('error fetching client from pull', err);
-//     }
-//     console.log('service', newUser.rows);
-//     return newUser.rows;
-//   });
-// };
+exports.createUserService = (data) => {
+  return new Promise((resolve, reject) => {
+    pool.connect( async (err, client) => {
+      const newUser = await client.query('INSERT INTO users(first_name, last_name) values($1, $2) RETURNING *', [data.first_name, data.last_name]);
+      if(err) {
+        reject(err);
+      }
+      resolve(newUser);
+    });
+  });
+};
+
+exports.updateUserService = (id, data) => {
+  return new Promise((resolve, reject) => {
+    pool.connect( async (err, client) => {
+      const updatedUser = await client.query('UPDATE users SET first_name=($1), last_name=($2) WHERE id=($3) RETURNING *', [data.first_name, data.last_name, id]);
+      if(err) {
+        reject(err);
+      }
+      resolve(updatedUser);
+    });
+  });
+};
+
+exports.deleteUserService = (id) => {
+  return new Promise((resolve, reject) => {
+    pool.connect( async (err, client) => {
+      const deletedUser = await client.query('DELETE FROM users WHERE id = $1', [id]);
+      if(err) {
+        reject(err);
+      }
+      resolve(deletedUser);
+    });
+  });
+};
