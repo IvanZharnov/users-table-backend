@@ -1,13 +1,19 @@
 const express = require('express');
 const { Pool } = require('pg');
-const parse = require('pg-connection-string').parse;
-const connect = parse('postgres://IvanZharnov:0987654321@localhost:5432/usersDB');
+const connect = {
+  database: 'usersDB',
+  user: 'IvanZharnov',
+  password: '0987654321',
+  host: 'localhost',
+  port: 5432,
+  max: 100
+};
 const pool = new Pool(connect);
 
 exports.getUsersService = () => {
   return new Promise((resolve, reject) => {
-    pool.connect( async (err, client) => {
-      const users = await client.query('SELECT * FROM users ORDER BY id ASC');
+    pool.connect( async (err, pool) => {
+      const users = await pool.query('SELECT * FROM users ORDER BY id ASC');
       if (err) {
         reject(err);
       };
