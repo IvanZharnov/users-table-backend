@@ -1,5 +1,7 @@
 const express = require('express');
+const { check, validationResult } = require('express-validator/check');
 const userService = require('../services/userService');
+const userValidator = require('../validators/validator');
 
 exports.getUsers = async (req, res) => {
   const users = await userService.getUsersService();
@@ -12,6 +14,8 @@ exports.createUser = async (req, res) => {
     first_name: req.body.first_name,
     last_name: req.body.last_name
   };
+  const errors = await validationResult(userValidator.createUserValidator(data));
+  console.log(errors);
   const newUser = await userService.createUserService(data);
   console.log('Create new user');
   return res.send(newUser.rows[0]);
