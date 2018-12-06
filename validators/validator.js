@@ -1,22 +1,7 @@
-const { check, validationResult } = require('express-validator/check');
+const validator = require('validator');
 
-exports.createUserValidator = (data) => {
-  console.log(data.first_name);
-  check(data.first_name).isAlpha();
-  check(data.last_name).isAlpha();
+exports.userValidation = (data) => {
+  const validFirstName = validator.isAlpha(data.first_name);
+  const validLastName = validator.isAlpha(data.last_name);
+  return validFirstName & validLastName;
 };
-
-// app.post('/user', [
-//   check('username').isEmail(),
-//   check('password').isLength({ min: 5 })
-// ], (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return res.status(422).json({ errors: errors.array() });
-//   }
-//
-//   User.create({
-//     username: req.body.username,
-//     password: req.body.password
-//   }).then(user => res.json(user));
-// });
